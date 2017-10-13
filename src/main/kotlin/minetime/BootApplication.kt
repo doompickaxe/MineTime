@@ -1,7 +1,5 @@
 package minetime
 
-import minetime.model.Person
-import minetime.persistence.PersonRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
@@ -13,10 +11,8 @@ class BootApplication {
     private val log = LoggerFactory.getLogger(BootApplication::class.java)
 
     @Bean
-    fun init(pr: PersonRepository) = CommandLineRunner {
+    fun init() = CommandLineRunner {
         log.info("_______init________")
-        pr.save(Person(firstName = "A", lastName = "B", email = "C", password = "D"))
-        pr.findAll().forEach { p -> log.info(p.toString()) }
     }
 }
 
