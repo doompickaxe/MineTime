@@ -13,20 +13,20 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 @RunWith(SpringJUnit4ClassRunner::class)
 @ContextConfiguration
 @WebAppConfiguration
-class DefaultControllerTest {
+class LoginControllerTest {
 
-    lateinit var mockMvc: MockMvc
+    lateinit var mvcMock: MockMvc
 
     @Before
     fun setup() {
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(DefaultController())
+        mvcMock = MockMvcBuilders.standaloneSetup(LoginController())
                 .build()
     }
 
     @Test
-    fun getDefaultTemplate() {
-        mockMvc.perform(get("/"))
-                .andExpect { result -> result.modelAndView.viewName == "index" }
+    fun login() {
+        mvcMock.perform(get("/login"))
+                .andExpect { result -> result.modelAndView.viewName == "signIn" }
+                .andExpect { result -> result.modelAndView.modelMap.containsAttribute("user") }
     }
 }
