@@ -15,6 +15,5 @@ class ResourcesConfig : WebMvcConfigurer {
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/").setViewName("index")
         registry.addViewController("/login").setViewName("signIn")
-        registry.addViewController("/signup").setViewName("signUp")
     }
 }

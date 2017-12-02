@@ -5,3 +5,7 @@ body {
 h1, h2, h3 {
     font-family: "Bell MT";
 }
+
+.header {
+    padding: 10px;
+}
