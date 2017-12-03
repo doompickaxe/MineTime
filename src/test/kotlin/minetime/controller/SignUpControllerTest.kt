@@ -43,7 +43,7 @@ class SignUpControllerTest {
         .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
         .content(requestBody))
         .andExpect { result ->
-          result.response.redirectedUrl.equals("/login")
+          result.response.redirectedUrl!! === "/login"
           verify(personRepo, times(1)).save(ArgumentMatchers.any(Person::class.java))
         }
   }
