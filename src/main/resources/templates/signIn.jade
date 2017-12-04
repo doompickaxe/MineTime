@@ -1,0 +1,14 @@
+extends head
+
+block content
+    h1 Log in to MineTime
+    form(class="pure-form pure-form-stacked" method="post")
+        legend Log in to the great MineTime
+
+        label(for="email") Email
+        input(type="text" id="email" name="username" value=user.email class="pure-input-rounded")
+
+        label(for="password") Password
+        input(type="password" id="password" name="password" value=user.password class="pure-input-rounded")
+
+        button.pure-button Submit
