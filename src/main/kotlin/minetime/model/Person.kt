@@ -10,18 +10,17 @@ data class Person(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = -1L,
 
-    @field:NotEmpty
+    @field:NotEmpty(message = "Please enter your firstname")
     var firstName: String,
 
-    @field:NotEmpty
+    @field:NotEmpty(message = "Please enter your lastname")
     var lastName: String,
 
     @Column(unique = true, nullable = false)
-    @field:NotEmpty
-    @field:Email
+    @field:Email(message = "Must be a valid email")
     var email: String,
 
-    @field:NotEmpty
+    @field:NotEmpty(message = "Please set a password")
     var password: String) {
 
   @ManyToMany(mappedBy = "members")

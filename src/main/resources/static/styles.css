@@ -9,3 +9,11 @@ h1, h2, h3 {
 .header {
     padding: 10px;
 }
+
+.error {
+    color: red;
+}
+
+input {
+    padding-bottom: 5px;
+}

@@ -7,35 +7,25 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import javax.validation.Valid
-import javax.validation.Validator
 
 @Controller
-class SignUpController(val personRepo: PersonRepository, val passwordEncoder: PasswordEncoder, val validator: Validator) {
+class SignUpController(val personRepo: PersonRepository, val passwordEncoder: PasswordEncoder) {
 
   @GetMapping("/signUp")
   fun registrationGet(): String = "signUp"
 
   @PostMapping("/signUp")
-  fun registrationPost(@Valid person: Person, bindingResult: BindingResult, model: Model): String {
-    if(bindingResult.hasErrors()) {
+  fun registrationPost(@Valid @ModelAttribute person: Person, result: BindingResult, model: Model): String {
+    if(result.hasErrors()) {
+      model.addAttribute("errors", result.allErrors)
       return "signUp"
     }
-    println(person.password)
-    println(person.lastName)
-    println(person.id)
-    println(person.firstName)
-    println(person.email)
 
-    val violations = validator.validate(person)
-    if(violations.isEmpty()) {
-      person.password = passwordEncoder.encode(person.password)
-      personRepo.save(person)
-      return "redirect:/login"
-    }
-
-    model.addAttribute("errors", violations)
-    return "signUp"
+    person.password = passwordEncoder.encode(person.password)
+    personRepo.save(person)
+    return "redirect:/login"
   }
 }
