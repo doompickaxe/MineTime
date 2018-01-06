@@ -20,5 +20,6 @@ block content
 
         button.pure-button Submit
 
-    for error in errors
-        p.error #{error.defaultMessage}
+    if errors
+        each error in errors
+            p error #{error.defaultMessage}
