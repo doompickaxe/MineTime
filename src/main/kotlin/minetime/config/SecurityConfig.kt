@@ -25,7 +25,7 @@ class SecurityConfig(val datasource: DataSource) : WebSecurityConfigurerAdapter(
         .loginPage("/login")
         .usernameParameter("email")
         .permitAll()
-        .defaultSuccessUrl("/hello")
+        .defaultSuccessUrl("/dashboard")
         .and()
         .logout()
         .permitAll()

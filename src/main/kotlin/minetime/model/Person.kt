@@ -10,10 +10,10 @@ data class Person(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = -1L,
 
-    @field:NotEmpty(message = "Please enter your firstname")
+    @field:NotEmpty(message = "Please enter your first name")
     var firstName: String,
 
-    @field:NotEmpty(message = "Please enter your lastname")
+    @field:NotEmpty(message = "Please enter your last name")
     var lastName: String,
 
     @Column(unique = true, nullable = false)
@@ -23,7 +23,7 @@ data class Person(
     @field:NotEmpty(message = "Please set a password")
     var password: String) {
 
-  @ManyToMany(mappedBy = "members")
+  @field:ManyToMany(mappedBy = "_members", fetch = FetchType.EAGER, cascade = arrayOf(CascadeType.ALL))
   val projects: List<Project> = listOf()
 }
 

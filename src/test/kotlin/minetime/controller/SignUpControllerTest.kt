@@ -35,11 +35,11 @@ class SignUpControllerTest {
     viewResolver.setSuffix(".jade")
 
     mockMvc = MockMvcBuilders
-        .standaloneSetup(SignUpController(personRepo, BCryptPasswordEncoder()))
-        .setViewResolvers(viewResolver)
-        .build()
+      .standaloneSetup(SignUpController(personRepo, BCryptPasswordEncoder()))
+      .setViewResolvers(viewResolver)
+      .build()
 
-    `when`(personRepo.save(ArgumentMatchers.any(Person::class.java))).then { invocation -> invocation.getArgument(0) }
+    `when`(personRepo.save(any(Person::class.java))).then { invocation -> invocation.getArgument(0) }
   }
 
   @Test
@@ -47,12 +47,12 @@ class SignUpControllerTest {
     val requestBody = "firstName=Test&lastName=User&email=ema&password=1234"
 
     mockMvc.perform(post("/signUp")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        .content(requestBody))
-        .andExpect { result ->
-          result.response.forwardedUrl === "/signUp"
-          verify(personRepo, times(0)).save(ArgumentMatchers.any(Person::class.java))
-        }
+      .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+      .content(requestBody))
+      .andExpect { result ->
+        result.response.forwardedUrl === "/signUp"
+        verify(personRepo, times(0)).save(ArgumentMatchers.any(Person::class.java))
+      }
   }
 
   @Test
@@ -60,11 +60,11 @@ class SignUpControllerTest {
     val requestBody = "firstName=Test&lastName=User&email=test@email.com&password=1234"
 
     mockMvc.perform(post("/signUp")
-        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        .content(requestBody))
-        .andExpect { result ->
-          result.response.redirectedUrl!! === "/login"
-          verify(personRepo, times(1)).save(ArgumentMatchers.any(Person::class.java))
-        }
+      .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+      .content(requestBody))
+      .andExpect { result ->
+        result.response.redirectedUrl!! === "/login"
+        verify(personRepo, times(1)).save(ArgumentMatchers.any(Person::class.java))
+      }
   }
 }

@@ -1,0 +1,20 @@
+extends header
+
+block content
+    h1 Home
+
+    h2 Projects you own
+    if ownProjects
+        ul
+        each pr in ownProjects
+            li #{pr.name}
+    else
+        p You don't have projects. Go on and create one!
+
+    h2 Projects you are part of
+    if projects
+        ul
+        each pr in projects
+            li #{pr.name}
+    else
+        p You are part of none projects
