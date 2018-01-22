@@ -1,0 +1,15 @@
+extends header
+
+block content
+    h1 Create a project
+
+    form(class="pure-form pure-form-stacked" method="post")
+        legend I'm glad helping you with your idea
+
+        label(for="projectName") Give it a lovely name
+        input(type="text" id="projectName" name="projectName" value=projectName class="pure-input-rounded" required)
+
+        button.pure-button Submit
+
+    if error
+        p Error: #{error}

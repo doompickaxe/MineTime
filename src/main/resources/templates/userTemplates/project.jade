@@ -1,0 +1,15 @@
+extends header
+
+block content
+    h1 Project: #{project.name}
+
+    h2 Owner:
+      p #{project.owner.getFullName()}
+
+    h2 Members:
+    if project.members.length > 1
+        ul
+        each member in projects.members
+            li #{member.getFullName()}
+    else
+        p There are no members

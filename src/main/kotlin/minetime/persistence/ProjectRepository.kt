@@ -3,7 +3,9 @@ package minetime.persistence
 import minetime.model.Person
 import minetime.model.Project
 import org.springframework.data.jpa.repository.JpaRepository
+import java.util.*
 
 interface ProjectRepository : JpaRepository<Project, Long> {
   fun findByOwner(person: Person): List<Project>
+  fun findById(id: UUID): Project
 }

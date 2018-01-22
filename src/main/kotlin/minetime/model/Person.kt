@@ -25,5 +25,7 @@ data class Person(
 
   @field:ManyToMany(mappedBy = "_members", fetch = FetchType.EAGER, cascade = arrayOf(CascadeType.ALL))
   val projects: List<Project> = listOf()
+
+  fun getFullName() = "$firstName $lastName"
 }
 
