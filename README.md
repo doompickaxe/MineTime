@@ -2,7 +2,7 @@
 
 _Note: This project is not finished_
 
-MineTime is a online Time Management Tool for projects.
+MineTime is an online Time Management Tool for projects.
 
 This is a pet project for using Spring with Kotlin.
 
@@ -10,5 +10,11 @@ This is a pet project for using Spring with Kotlin.
 You can sign up and create projects. Then you can send invitations to people who can sign
 up too, if they aren't yet.
 
-You can create categories and you and your members can manage your time spent on the
+You can create categories and you and your members can manage your time, spent on the
 project. Then it will provide you with fancy statistics about your project.
+
+## Things done yet
+* Sign up
+* Log in
+* Create projects
+* See projects
