@@ -10,7 +10,7 @@ data class Project(@Id
                    @GeneratedValue(generator = "uuid2")
                    @GenericGenerator(name = "uuid2", strategy = "uuid2")
                    @Column(columnDefinition = "BINARY(16)")
-                   var id: UUID = UUID(0,0),
+                   val id: UUID = UUID(0,0),
 
                    @field:NotBlank
                    var name: String,
@@ -22,13 +22,22 @@ data class Project(@Id
   @field:JoinTable
   private val _members = mutableListOf(owner)
 
-  @Transient
-  val members: List<Person> = _members.toList()
+  @ElementCollection(targetClass = Category::class, fetch = FetchType.EAGER)
+  val _categories = mutableSetOf<Category>()
+
+  fun members() = _members.toList()
+
+  fun categories() = _categories.toSet()
 
   fun addMembers(vararg person: Person): Project {
     _members.addAll(person)
     return this
   }
 
-  fun isPartOf(person: Person) = person == owner  || members.contains(person)
+  fun addCategories(vararg categories: Category): Project {
+    _categories.addAll(categories)
+    return this
+  }
+
+  fun isPartOf(person: Person) = person == owner || _members.contains(person)
 }

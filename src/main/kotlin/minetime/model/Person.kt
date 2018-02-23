@@ -1,5 +1,6 @@
 package minetime.model
 
+import org.apache.commons.lang3.builder.HashCodeBuilder
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
@@ -27,5 +28,18 @@ data class Person(
   val projects: List<Project> = listOf()
 
   fun getFullName() = "$firstName $lastName"
+
+  override fun equals(other: Any?): Boolean {
+    if(other === this) return true
+    if(other == null) return false
+    if(other !is Person) return false
+    return other.id == id
+  }
+
+  override fun hashCode(): Int {
+    return HashCodeBuilder(3, 19)
+      .append(id)
+      .toHashCode()
+  }
 }
 

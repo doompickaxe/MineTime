@@ -3,13 +3,19 @@ extends header
 block content
     h1 Project: #{project.name}
 
-    h2 Owner:
-      p #{project.owner.getFullName()}
+    if(person == project.owner)
+        p You are the owner of this project.
+        if(project.categories().isEmpty())
+            p You don't have created any categories yet. Come on and create some
+            // TODO a(href="/") here.
+    else
+        h2 Owner:
+          p #{project.owner.getFullName()}
 
     h2 Members:
     if project.members.length > 1
         ul
-        each member in projects.members
+        each member in projects.members()
             li #{member.getFullName()}
     else
         p There are no members

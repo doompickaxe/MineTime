@@ -33,7 +33,8 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
     val project = projectRepo.findById(projectId)
     val person = personRepo.findByEmail(principal.name)
     return if(project.isPartOf(person)) {
-      ModelAndView("userTemplates/project", "project", project)
+      val values = mapOf(Pair("project", project), Pair("person", person))
+      ModelAndView("userTemplates/project", values)
     } else {
       ModelAndView("redirect:/dashboard", FORBIDDEN)
     }
