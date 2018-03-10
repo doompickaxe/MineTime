@@ -6,8 +6,9 @@ block content
     if(person == project.owner)
         p You are the owner of this project.
         if(project.categories().isEmpty())
-            p You don't have created any categories yet. Come on and create some
-            // TODO a(href="/") here.
+            p
+              | You don't have created any categories yet. Come on and create some
+              a(href="/projects/#{project.id}/categories/create")  here.
     else
         h2 Owner:
           p #{project.owner.getFullName()}

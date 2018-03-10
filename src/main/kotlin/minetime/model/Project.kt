@@ -18,14 +18,14 @@ data class Project(@Id
                    @ManyToOne
                    var owner: Person) {
 
-  @field:ManyToMany(cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
+  @field:ManyToMany(cascade = [(CascadeType.ALL)], fetch = FetchType.EAGER)
   @field:JoinTable
-  private val _members = mutableListOf(owner)
+  private val _members = mutableSetOf(owner)
 
   @ElementCollection(targetClass = Category::class, fetch = FetchType.EAGER)
   val _categories = mutableSetOf<Category>()
 
-  fun members() = _members.toList()
+  fun members() = _members.toSet()
 
   fun categories() = _categories.toSet()
 

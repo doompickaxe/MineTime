@@ -1,5 +1,6 @@
 package minetime
 
+import minetime.model.Category
 import minetime.model.Person
 import minetime.model.Project
 import minetime.persistence.PersonRepository
@@ -36,6 +37,7 @@ class BootApplication {
 
     val projectOfB = Project(name = "SecondOfAll", owner = personB)
     projectOfB.addMembers(personA)
+    projectOfB.addCategories(Category("Base"))
     projectRepo.save(Project(name = "FirstOfAll", owner = personA))
     projectRepo.save(projectOfB)
   }

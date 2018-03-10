@@ -39,4 +39,15 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
       ModelAndView("redirect:/dashboard", FORBIDDEN)
     }
   }
+
+  @GetMapping("/{projectId}/categories/create")
+  fun createCategory(@PathVariable projectId: UUID, principal: Principal): ModelAndView {
+    val project = projectRepo.findById(projectId)
+    val person = personRepo.findByEmail(principal.name)
+    return if(project.isPartOf(person)) {
+      ModelAndView("userTemplates/project", "project", project)
+    } else {
+      ModelAndView("redirect:/dashboard", FORBIDDEN)
+    }
+  }
 }
