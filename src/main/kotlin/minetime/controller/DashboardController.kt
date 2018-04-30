@@ -14,7 +14,7 @@ class DashboardController(val personRepo: PersonRepository, val projectRepo: Pro
 
   @GetMapping
   fun loadDashboard(person: Principal): ModelAndView {
-    val model = ModelAndView("userTemplates/dashboard")
+    val model = ModelAndView("loggedIn/dashboard")
     val user = personRepo.findByEmail(person.name)
     val projects = projectRepo.findByOwner(user)
 

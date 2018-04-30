@@ -1,0 +1,13 @@
+extends header
+
+block content
+    script(src="/resources/variableInputs.js")
+    h1 Create your categories
+
+    form(class="pure-form pure-form-stacked" method="post")
+        input(type="text" name="categories[]" required)
+        button.pure-button(type="button" onclick="addNewRow(this, 'categories[]')" style="margin-right: 5px") Add row
+        button.pure-button Submit
+
+    if error
+        p Error: #{error}

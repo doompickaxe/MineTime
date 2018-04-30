@@ -15,13 +15,13 @@ import javax.validation.Valid
 class SignUpController(val personRepo: PersonRepository, val passwordEncoder: PasswordEncoder) {
 
   @GetMapping("/signUp")
-  fun registrationGet(): String = "signUp"
+  fun registrationGet(): String = "notLoggedIn/signUp"
 
   @PostMapping("/signUp")
   fun registrationPost(@Valid @ModelAttribute person: Person, result: BindingResult, model: Model): String {
     if(result.hasErrors()) {
       model.addAttribute("errors", result.allErrors)
-      return "signUp"
+      return "notLoggedIn/signUp"
     }
 
     person.password = passwordEncoder.encode(person.password)

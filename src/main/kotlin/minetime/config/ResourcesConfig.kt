@@ -11,11 +11,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class ResourcesConfig : WebMvcConfigurer {
   override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
     registry.addResourceHandler("/resources/**")
-        .addResourceLocations("classpath:/static/")
+      .addResourceLocations("classpath:/static/")
   }
 
   override fun addViewControllers(registry: ViewControllerRegistry) {
-    registry.addViewController("/").setViewName("index")
-    registry.addViewController("/login").setViewName("signIn")
+    registry.addViewController("/").setViewName("notLoggedIn/index")
+    registry.addViewController("/login").setViewName("notLoggedIn/signIn")
   }
 }
