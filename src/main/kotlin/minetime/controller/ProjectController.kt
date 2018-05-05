@@ -1,6 +1,7 @@
 package minetime.controller
 
 import minetime.model.Category
+import minetime.model.Person
 import minetime.model.Project
 import minetime.persistence.PersonRepository
 import minetime.persistence.ProjectRepository
@@ -32,38 +33,47 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
   }
 
   @GetMapping("/{projectId}")
-  fun navigate(@PathVariable projectId: UUID, principal: Principal): ModelAndView {
-    val project = projectRepo.findById(projectId)
-    val person = personRepo.findByEmail(principal.name)
-    return if(project.isPartOf(person)) {
-      val values = mapOf(Pair("project", project), Pair("person", person))
+  fun navigate(@PathVariable projectId: UUID, principal: Principal) =
+    doOrStandardError(projectId, principal.name, {
+      val values = mapOf(Pair("project", it.first), Pair("person", it.second))
       ModelAndView("loggedIn/project", values)
-    } else {
-      ModelAndView("redirect:/dashboard", FORBIDDEN)
-    }
-  }
+    })
+
+  @GetMapping("/{projectId}/logtime")
+  fun logtime(@PathVariable projectId: UUID, principal: Principal) =
+    doOrStandardError(projectId, principal.name, {
+      val values = mapOf(Pair("project", it.first), Pair("person", it.second))
+      ModelAndView("loggedIn/project", values)
+    })
 
   @GetMapping("/{projectId}/categories/create")
-  fun getCategories(@PathVariable projectId: UUID, principal: Principal): ModelAndView {
-    val project = projectRepo.findById(projectId)
-    val person = personRepo.findByEmail(principal.name)
-    return if(project.isPartOf(person)) {
-      ModelAndView("loggedIn/createCategories", "project", project)
+  fun getCategories(@PathVariable projectId: UUID, principal: Principal) =
+    doOrStandardError(projectId, principal.name, {
+      ModelAndView("loggedIn/createCategories", "project", it.first)
+    })
+
+  @PostMapping("/{projectId}/categories/create", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
+  fun createCategories(@PathVariable projectId: UUID, @RequestBody params: MultiValueMap<String, String>, principal: Principal) =
+    doOrStandardError(projectId, principal.name, { projectAndPerson ->
+      params["categories[]"]?.forEach { projectAndPerson.first.addCategories(Category(it)) }
+      projectRepo.save(projectAndPerson.first)
+      ModelAndView("redirect:/projects/$projectId")
+    })
+
+  fun standardError() = ModelAndView("redirect:/dashboard", FORBIDDEN)
+
+  fun getProjectAndPerson(projectId: UUID, email: String) = projectRepo.findById(projectId) to personRepo.findByEmail(email)
+
+  fun <T> whenPartOf(pair: Pair<Project, Person>, then: (Pair<Project, Person>) -> T, orElse: (Pair<Project, Person>) -> T): T {
+    return if(pair.first.isPartOf(pair.second)) {
+      then.invoke(pair)
     } else {
-      ModelAndView("redirect:/dashboard", FORBIDDEN)
+      orElse.invoke(pair)
     }
   }
 
-  @PostMapping("/{projectId}/categories/create", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
-  fun createCategories(@PathVariable projectId: UUID, @RequestBody params: MultiValueMap<String, String>, principal: Principal): ModelAndView {
-    val project = projectRepo.findById(projectId)
-    val person = personRepo.findByEmail(principal.name)
-    return if(project.isPartOf(person)) {
-      params["categories[]"]?.forEach { project.addCategories(Category(it)) }
-      projectRepo.save(project)
-      ModelAndView("redirect:/projects/$projectId")
-    } else {
-      ModelAndView("redirect:/dashboard", FORBIDDEN)
-    }
+  fun doOrStandardError(projectId: UUID, email: String, f: (Pair<Project, Person>) -> ModelAndView): ModelAndView {
+    val projectAndPerson = getProjectAndPerson(projectId, email)
+    return whenPartOf(projectAndPerson, f, { standardError() })
   }
 }
