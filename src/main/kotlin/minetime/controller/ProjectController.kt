@@ -33,9 +33,12 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
   }
 
   @GetMapping("/{projectId}")
-  fun navigate(@PathVariable projectId: UUID, principal: Principal) =
+  fun getProject(@PathVariable projectId: UUID, principal: Principal) =
     doOrStandardError(projectId, principal.name, {
-      val values = mapOf(Pair("project", it.first), Pair("person", it.second))
+      val values = mapOf(
+        Pair("project", it.first),
+        Pair("person", it.second),
+        Pair("categorieNames", it.first.categories().map { "\"${it.name}\"" }))
       ModelAndView("loggedIn/project", values)
     })
 

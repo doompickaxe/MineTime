@@ -17,9 +17,8 @@ class BootApplication {
   private val log = LoggerFactory.getLogger(BootApplication::class.java)
 
   @Bean
-  fun init(userRepo: PersonRepository, projectRepo: ProjectRepository) = CommandLineRunner {
+  fun init(userRepo: PersonRepository, projectRepo: ProjectRepository, passwordEncoder: BCryptPasswordEncoder) = CommandLineRunner {
     log.info("_______init________")
-    val passwordEncoder = BCryptPasswordEncoder()
 
     var personA = Person(
       firstName = "abc",
@@ -35,11 +34,11 @@ class BootApplication {
     personA = userRepo.save(personA)
     personB = userRepo.save(personB)
 
-    val projectOfB = Project(name = "SecondOfAll", owner = personB)
-    projectOfB.addMembers(personA)
-    projectOfB.addCategories(Category("Base"))
-    projectRepo.save(Project(name = "FirstOfAll", owner = personA))
-    projectRepo.save(projectOfB)
+    val projectOfA = Project(name = "FirstOfAll", owner = personA)
+    projectOfA.addMembers(personB)
+    projectOfA.addCategories(Category("Base"), Category("notBase"))
+    projectRepo.save(Project(name = "SecondOfAll", owner = personB))
+    projectRepo.save(projectOfA.addMembers(personB))
   }
 }
 
