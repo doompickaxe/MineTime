@@ -3,6 +3,7 @@ package minetime
 import minetime.model.Category
 import minetime.model.Person
 import minetime.model.Project
+import minetime.model.Transaction
 import minetime.persistence.PersonRepository
 import minetime.persistence.ProjectRepository
 import org.slf4j.LoggerFactory
@@ -35,10 +36,12 @@ class BootApplication {
     personB = userRepo.save(personB)
 
     val projectOfA = Project(name = "FirstOfAll", owner = personA)
+    val categoryA = Category("Base")
     projectOfA.addMembers(personB)
-    projectOfA.addCategories(Category("Base"), Category("notBase"))
-    projectRepo.save(Project(name = "SecondOfAll", owner = personB))
-    projectRepo.save(projectOfA.addMembers(personB))
+      .addCategories(categoryA, Category("notBase"))
+      .addTransaction(Transaction(person = personA, category = categoryA, amount = 2.0))
+    projectRepo.save(Project(name = "SecondOfAll", owner = personB).addMembers(personA))
+    projectRepo.save(projectOfA)
   }
 }
 

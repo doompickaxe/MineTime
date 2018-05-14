@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 import java.security.Principal
 import java.util.*
+import kotlin.collections.HashMap
 
 @Controller
 @RequestMapping("/projects")
@@ -38,7 +39,10 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
       val values = mapOf(
         Pair("project", it.first),
         Pair("person", it.second),
-        Pair("categorieNames", it.first.categories().map { "\"${it.name}\"" }))
+        Pair("transactions", it.first.transactions()
+          .groupBy { it.category }
+          .mapValues { it.value.sumByDouble { it.amount } }
+          .map{"\"${it.key.name}\", ${it.value}"}))
       ModelAndView("loggedIn/project", values)
     })
 
@@ -58,7 +62,7 @@ class ProjectController(val personRepo: PersonRepository, val projectRepo: Proje
   @PostMapping("/{projectId}/categories/create", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
   fun createCategories(@PathVariable projectId: UUID, @RequestBody params: MultiValueMap<String, String>, principal: Principal) =
     doOrStandardError(projectId, principal.name, { projectAndPerson ->
-      params["categories[]"]?.forEach { projectAndPerson.first.addCategories(Category(it)) }
+      params["categories[]"]?.forEach { projectAndPerson.first.addCategories(Category(name = it)) }
       projectRepo.save(projectAndPerson.first)
       ModelAndView("redirect:/projects/$projectId")
     })

@@ -1,33 +1,42 @@
 package minetime.model
 
 import org.hibernate.annotations.GenericGenerator
+import org.slf4j.LoggerFactory
 import java.util.*
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
+val logger = LoggerFactory.getLogger(Project::class.java)
+
 @Entity
-data class Project(@Id
-                   @GeneratedValue(generator = "uuid2")
-                   @GenericGenerator(name = "uuid2", strategy = "uuid2")
-                   @Column(columnDefinition = "BINARY(16)")
-                   val id: UUID = UUID(0,0),
+data class Project(
+  @Id
+  @GeneratedValue(generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  @Column(columnDefinition = "BINARY(16)")
+  val id: UUID = UUID(0, 0),
 
-                   @field:NotBlank
-                   var name: String,
+  @field:NotBlank
+  var name: String,
 
-                   @ManyToOne
-                   var owner: Person) {
+  @ManyToOne
+  var owner: Person) {
 
   @field:ManyToMany(cascade = [(CascadeType.ALL)], fetch = FetchType.EAGER)
   @field:JoinTable
   private val _members = mutableSetOf(owner)
 
-  @ElementCollection(targetClass = Category::class, fetch = FetchType.EAGER)
-  val _categories = mutableSetOf<Category>()
+  @ElementCollection(targetClass = Category::class)
+  private val categories = mutableSetOf<Category>()
+
+  @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+  private val transactions = mutableListOf<Transaction>()
 
   fun members() = _members.toSet()
 
-  fun categories() = _categories.toSet()
+  fun transactions() = transactions.toList()
+
+  fun categories() = categories.toList()
 
   fun addMembers(vararg person: Person): Project {
     _members.addAll(person)
@@ -35,9 +44,19 @@ data class Project(@Id
   }
 
   fun addCategories(vararg categories: Category): Project {
-    _categories.addAll(categories)
+    this.categories.addAll(categories)
     return this
   }
 
-  fun isPartOf(person: Person) = person == owner || _members.contains(person)
+  fun addTransaction(vararg transaction: Transaction): Project {
+    transaction
+      .filter { categories.contains(it.category) }
+      .forEach {
+        transactions.add(it)
+        it.project = this
+      }
+    return this
+  }
+
+  fun isPartOf(person: Person) = person === owner || _members.contains(person)
 }
